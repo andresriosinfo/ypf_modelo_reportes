@@ -1,0 +1,190 @@
+\documentclass[11pt]{article}
+
+% ================== PAQUETES BÁSICOS ==================
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fontspec}   % XeLaTeX / LuaLaTeX
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{lastpage}
+
+% ================== FUENTES (VERSIÓN QUE SIEMPRE COMPILA) ==================
+% Para que compile sin depender de tus .ttf, uso fuentes TeX Gyre,
+% que están disponibles en Overleaf por defecto.
+% Luego puedes cambiar estas líneas por tus archivos de fuente reales.
+
+% Títulos (simulando SE Optimist)
+\newfontfamily\SEOptimist{TeX Gyre Adventor}
+\newfontfamily\SEOptimistLight{TeX Gyre Adventor}
+
+% Cuerpo (simulando Helvetica)
+\newfontfamily\SEBodyMedium{TeX Gyre Heros}
+\newfontfamily\SEBodyLight{TeX Gyre Heros}
+
+% Fuente por defecto del cuerpo
+\setmainfont{TeX Gyre Heros}
+
+% Alineación del cuerpo según requerimiento
+\renewcommand{\familydefault}{\sfdefault}
+
+% ================== COLORES SCHNEIDER ==================
+\definecolor{SE355C}{RGB}{0,149,63}       % Pantone 355C (verde principal)
+\definecolor{SE369C}{RGB}{120,190,32}     % Pantone 369C
+\definecolor{SE375C}{RGB}{141,199,63}     % Pantone 375C
+\definecolor{SECoolGrey11}{RGB}{83,86,90} % Cool Grey 11
+\definecolor{SECoolGrey7}{RGB}{140,144,147} % Cool Grey 7
+
+% ================== FORMATO DEL PÁRRAFO ==================
+\setlength{\parindent}{0pt}     % sin sangría
+\setlength{\parskip}{0.8em}     % espacio entre párrafos
+\raggedright                    % alineado a la izquierda
+
+% ================== ESTILO DE TÍTULOS ==================
+% Título de nivel 1 = SE Optimist, verde principal
+\titleformat{\section}
+  {\SEOptimist\Large\color{SE355C}}
+  {\thesection.}{0.6em}{}
+
+% Subtítulo = SE Optimist Light
+\titleformat{\subsection}
+  {\SEOptimistLight\large\color{SE355C}}
+  {\thesubsection}{0.6em}{}
+
+% Sub-subtítulo = Helvetica Medium
+\titleformat{\subsubsection}
+  {\SEBodyMedium\normalsize\color{SECoolGrey11}}
+  {\thesubsubsection}{0.6em}{}
+
+% Reducir espacio después de títulos
+\titlespacing*{\section}{0pt}{1.5ex}{1ex}
+\titlespacing*{\subsection}{0pt}{1.2ex}{0.7ex}
+\titlespacing*{\subsubsection}{0pt}{1ex}{0.5ex}
+
+% ================== ENCABEZADO Y PIE DE PÁGINA ==================
+\pagestyle{fancy}
+\fancyhf{} % limpiar
+
+% Encabezado: logo a la izquierda, nombre del sistema a la mitad, fecha a la derecha
+% Cuando tengas el logo, quita el % y asegúrate que el archivo exista
+% \lhead{%
+%   \includegraphics[height=12mm]{schneider_logo} % <-- schneider_logo.pdf/png en la misma carpeta
+% }
+\chead{%
+  \SEOptimist\color{SECoolGrey11} YPF Argentina
+}
+\rhead{%
+  \SEBodyLight\small\color{SECoolGrey11}
+  {{FECHA\_REPORTE}} % <-- luego Cursor reemplaza esto
+}
+
+% Línea verde bajo el encabezado
+\renewcommand{\headrule}{%
+  {\color{SE355C}\hrule height 1.2pt width\headwidth\vspace{-0.5em}}%
+}
+
+% Pie de página: nombre reporte izquierda, número de página derecha
+\lfoot{\SEBodyLight\small YPF Argentina}
+\rfoot{\SEBodyLight\small Página \thepage\ de \pageref{LastPage}}
+
+\renewcommand{\footrulewidth}{0pt}
+
+% ================== METADATOS DEL DOCUMENTO ==================
+\title{\SEOptimist\color{SE355C} Informe de Turno de Operación}
+\author{\SEBodyLight Schneider Electric}
+\date{} % Fecha la ponemos en el encabezado
+
+% ============================================================
+% ===============   INICIO DEL DOCUMENTO   ====================
+% ============================================================
+\begin{document}
+
+% --------- PORTADA / RESUMEN VISUAL (PÁGINA 1) --------------
+\thispagestyle{fancy}
+
+\vspace*{2cm}
+
+{\SEOptimist\fontsize{24}{26}\selectfont\color{SE355C}
+  INFORME DE TURNO -- UNIDAD N-101}
+}
+
+\vspace{1em}
+
+{\SEBodyLight\large\color{SECoolGrey11}
+Período analizado: {{PERIODO\_ANALIZADO}} % p.ej. "Últimas 8 horas (07:00–15:00)"
+}
+
+\vspace{2em}
+
+% --- Cuadro resumen de indicadores principales ---
+\begin{tabularx}{\textwidth}{>{\SEBodyMedium\color{SECoolGrey11}}l
+                            >{\SEBodyLight\color{SECoolGrey11}}X}
+Indicador & Valor \\
+\hline
+Tiempo en rango global & {{PCT\_EN\_RANGO\_GLOBAL}} \\
+Variables analizadas & {{N\_VARIABLES}} \\
+Variables sin desviaciones & {{N\_OK}} \\
+Variables con desviaciones & {{N\_CON\_DESVIO}} \\
+Variables críticas & {{N\_CRITICAS}} \\
+\end{tabularx}
+
+\vspace{2em}
+
+{\SEBodyLight\color{SECoolGrey11}
+Este reporte presenta el estado actual del desempeño de la unidad
+{{NOMBRE\_UNIDAD}}, incluyendo estabilidad de variables de proceso,
+desviaciones relevantes y recomendaciones para el siguiente turno.
+}
+
+\newpage
+
+% ================== CONTENIDO PRINCIPAL ==================
+
+\section{Resumen Ejecutivo}
+
+{{RESUMEN\_EJECUTIVO}}
+
+% --------------------------------------------------------
+
+\section{Inventario y Alcance del Análisis}
+
+{{INVENTARIO\_Y\_ALCANCE}}
+
+% --------------------------------------------------------
+
+\section{Estado de las Variables del Turno}
+
+\subsection{Variables bien comportadas}
+
+{{VARIABLES\_BIEN\_COMPORTADAS}}
+
+\subsection{Variables con desviaciones relevantes}
+
+{{ESTADO\_GLOBAL\_DESVIOS}}
+
+\subsection{Detalle por variable con desviaciones}
+
+{{DETALLE\_POR\_VARIABLE}}
+
+% --------------------------------------------------------
+
+\section{Condiciones de Entrada y Salida de la Unidad}
+
+{{CONDICIONES\_ENTRADA\_SALIDA}}
+
+% --------------------------------------------------------
+
+\section{Puntos a Vigilar para el Siguiente Turno}
+
+{{PUNTOS\_A\_VIGILAR}}
+
+% --------------------------------------------------------
+
+\section*{Anexos (Opcional)}
+
+{{ANEXOS\_OPCIONALES}}
+
+\label{LastPage}
+\end{document}

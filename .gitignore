@@ -14,3 +14,43 @@ ENV/
 .idea/
 *.log
 
+# Datos y archivos generados
+*.csv
+*.pkl
+*.pickle
+
+# Imágenes temporales y gráficas generadas
+*.png
+*.jpg
+*.jpeg
+*.gif
+chatbot/temp_graficas/
+chatbot_temp_graficas_*.png
+gráficas/
+gráficas_*.png
+
+# Informes generados
+informes/*.tex
+informes/*.aux
+informes/*.out
+informes/*.log
+informes/*.pdf
+informes/*.toc
+informe_turno_*.tex
+
+# Archivos temporales
+turno_seleccionado.txt
+.gradio/
+
+# Modelos entrenados (si están en subdirectorios específicos)
+ypf_anomalies_detector/**/models/
+ypf_anomalies_detector/**/results/
+ypf_anomalies_detector/**/output/
+ypf_anomalies_detector/**/datos/
+
+
+
+
+
+
+
