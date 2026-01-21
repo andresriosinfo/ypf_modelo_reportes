@@ -42,11 +42,9 @@ informe_turno_*.tex
 turno_seleccionado.txt
 .gradio/
 
-# Modelos entrenados (si están en subdirectorios específicos)
-ypf_anomalies_detector/**/models/
-ypf_anomalies_detector/**/results/
-ypf_anomalies_detector/**/output/
-ypf_anomalies_detector/**/datos/
+# Excluir completamente ypf_anomalies_detector
+ypf_anomalies_detector/
+
 
 
 
