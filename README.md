@@ -1,14 +1,14 @@
-# Arquitectura Principal del Sistema YPF - Modelo de Lenguaje
+# YPF Modelo de Lenguaje - Sistema de Generación de Reportes
+
+Sistema de análisis de procesos industriales que combina features engineering, detección de anomalías y generación de reportes en lenguaje natural usando modelos de lenguaje.
 
 ## Visión General
 
-El sistema es una **pipeline de análisis de procesos industriales** que combina:
-1. **Procesamiento de datos** (features engineering)
-2. **Detección de anomalías** (Prophet)
-3. **Generación de reportes con LLM** (Gemma/Qwen)
-4. **Interfaz de chatbot** (Gradio)
-
----
+Este sistema es una pipeline de análisis de procesos industriales que combina:
+1. Procesamiento de datos (features engineering)
+2. Detección de anomalías (Prophet)
+3. Generación de reportes con LLM (Gemma/Qwen)
+4. Interfaz de chatbot (Gradio)
 
 ## Arquitectura en Capas
 
@@ -42,14 +42,6 @@ El sistema es una **pipeline de análisis de procesos industriales** que combina
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
-│              CAPA DE DETECCIÓN DE ANOMALÍAS                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Prophet    │  │  Detección   │  │  Visualización│      │
-│  │  (Modelos)   │  │  (Anomalías) │  │  (Gráficas)   │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-└─────────────────────────────────────────────────────────────┘
-                            ↓
-┌─────────────────────────────────────────────────────────────┐
 │                    CAPA DE DATOS                             │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
 │  │   Excel/CSV  │  │     SQL      │  │  Archivos    │      │
@@ -58,11 +50,9 @@ El sistema es una **pipeline de análisis de procesos industriales** que combina
 └─────────────────────────────────────────────────────────────┘
 ```
 
----
-
 ## Componentes Principales
 
-### 1. **Módulo de Features** (`features/`)
+### 1. Módulo de Features (`features/`)
 
 **Propósito**: Transformar datos de proceso industrial en features estructuradas por turno.
 
@@ -105,9 +95,7 @@ CSV: features_turno_llm_ready.csv
 - `calcular_dinamicas_por_turno.py`: Analiza tendencias y oscilaciones
 - `clasificar_*.py`: Convierte valores numéricos en categorías
 
----
-
-### 2. **Módulo LLM** (`llm/`)
+### 2. Módulo LLM (`llm/`)
 
 **Propósito**: Generar reportes en lenguaje natural usando modelos de lenguaje.
 
@@ -141,48 +129,9 @@ Reportes LLM (CSV con textos generados)
 - `prompts.py`: Templates de prompts especializados
 - `generate_per_variable.py`: Orquestador de generación
 
----
+### 3. Variaciones (`variaciones/`)
 
-### 3. **Módulo de Detección de Anomalías** (`ypf_anomalies_detector/`)
-
-**Propósito**: Detectar anomalías en series temporales usando Prophet.
-
-**Pipeline**:
-
-```
-Datos Limpios (CSV)
-    ↓
-[Selección de Variables]
-    - Protocolo de selección
-    - Limpieza de datos
-    ↓
-[Entrenamiento Prophet]
-    - Modelo por variable
-    - Aprende tendencias y estacionalidad
-    ↓
-[Detección]
-    - Predicción de valores esperados
-    - Intervalos de confianza (95%)
-    - Cálculo de scores de anomalía
-    ↓
-Resultados (CSV con anomalías detectadas)
-```
-
-**Tecnologías**:
-- **Facebook Prophet**: Modelos de series temporales
-- **SQL Server**: Integración para tiempo real (opcional)
-
----
-
-### 4. **Interfaz de Chatbot** (Gradio)
-
-**Propósito**: Interfaz web para interactuar con el modelo LLM.
-
-**Componentes**:
-- Chat general: Preguntas directas al modelo
-- Análisis desde CSV: Análisis estructurado de variables
-
----
+Carpeta de experimentación para probar diferentes modelos de lenguaje sin afectar el proyecto principal. Actualmente configurada con Qwen 2.5 7B Instruct (más rápido que Gemma 2 9B).
 
 ## Flujo de Datos Completo
 
@@ -215,25 +164,83 @@ Resultados (CSV con anomalías detectadas)
    └─> Informes LaTeX (opcional)
 ```
 
-### Flujo Paralelo (Detección de Anomalías)
+## Estructura del Proyecto
 
 ```
-1. DATOS LIMPIOS
-   └─> CSV procesado
-   
-2. ENTRENAMIENTO PROPHET
-   └─> Modelos por variable
-   
-3. DETECCIÓN
-   └─> Comparación real vs. predicho
-   └─> Scores de anomalía
-   
-4. RESULTADOS
-   └─> CSV con anomalías
-   └─> Visualizaciones
+ypf_modelo_lenguaje/
+├── features/              # Features engineering
+│   ├── preprocesamiento.py
+│   ├── features_turno.py
+│   ├── rangos.py
+│   ├── calcular_dinamicas_por_turno.py
+│   ├── clasificar_dinamica_turno.py
+│   ├── clasificar_rangos_turno.py
+│   └── main_generar_features.py
+├── llm/                   # Modelo de lenguaje
+│   ├── config.py
+│   ├── model_gemma.py
+│   ├── prompts.py
+│   ├── generate_per_variable.py
+│   └── probar_gemma.py
+├── variaciones/           # Experimentación (copia)
+│   ├── features/
+│   ├── llm/
+│   └── README.md
+└── plantilla/             # Templates LaTeX
+    └── main.tex
 ```
 
----
+## Requisitos
+
+### Dependencias principales
+
+```bash
+pip install pandas numpy transformers torch gradio accelerate
+```
+
+### Modelos de lenguaje
+
+El sistema soporta diferentes modelos de lenguaje:
+- **Gemma 2 9B Instruct** (proyecto principal)
+- **Qwen 2.5 7B Instruct** (variaciones - más rápido)
+
+## Uso
+
+### 1. Generar Features
+
+```bash
+cd features
+python main_generar_features.py
+```
+
+Esto genera `features_turno_llm_ready.csv` con todas las features calculadas.
+
+### 2. Generar Reportes con LLM
+
+```bash
+cd llm
+python generate_per_variable.py
+```
+
+O usar la función programáticamente:
+
+```python
+from llm.generate_per_variable import generar_para_turno
+
+df_reportes = generar_para_turno(
+    ruta_csv_features="features_turno_llm_ready.csv",
+    fecha="2024-10-01",
+    turno="T1_00_08"
+)
+```
+
+### 3. Experimentar con Modelos (Variaciones)
+
+```bash
+cd variaciones
+# Editar variaciones/llm/config.py para cambiar el modelo
+python -c "from llm.model_gemma import GemmaClient; client = GemmaClient()"
+```
 
 ## Tecnologías Utilizadas
 
@@ -242,40 +249,32 @@ Resultados (CSV con anomalías detectadas)
 - **Pandas**: Procesamiento de datos
 - **Transformers**: Modelos de lenguaje (Gemma, Qwen)
 - **PyTorch**: Framework de deep learning
-- **Prophet**: Series temporales
-- **SQL Server**: Base de datos (opcional)
 
 ### Frontend
 - **Gradio**: Interfaz web del chatbot
 - **LaTeX**: Generación de informes
-- **Matplotlib/Plotly**: Visualizaciones
-
----
 
 ## Características Arquitectónicas
 
-### 1. **Modularidad**
+### Modularidad
 - Cada módulo es independiente
 - Interfaces claras entre componentes
 - Fácil de extender o modificar
 
-### 2. **Separación de Responsabilidades**
+### Separación de Responsabilidades
 - **Features**: Procesamiento de datos
 - **LLM**: Generación de texto
-- **Detector**: Análisis estadístico
-- **Chatbot**: Interfaz de usuario
+- **Variaciones**: Experimentación
 
-### 3. **Pipeline ETL**
+### Pipeline ETL
 - **Extract**: Datos de Excel/CSV/SQL
 - **Transform**: Features engineering
 - **Load**: CSV listos para LLM
 
-### 4. **Configurabilidad**
+### Configurabilidad
 - Modelos intercambiables (Gemma, Qwen, etc.)
 - Parámetros ajustables
 - Prompts personalizables
-
----
 
 ## Puntos de Extensión
 
@@ -285,35 +284,13 @@ Resultados (CSV con anomalías detectadas)
 4. **Nuevas visualizaciones**: Extender módulo de gráficas
 5. **Integración con otras fuentes**: Extender preprocesamiento
 
----
+## Notas
 
-## Estructura de Directorios
+- Los datos (CSV, PKL, imágenes) están excluidos del repositorio por `.gitignore`
+- El proyecto original usa Gemma 2 9B Instruct
+- La carpeta `variaciones/` contiene una copia para experimentar con modelos más rápidos
+- Los informes LaTeX se generan usando la plantilla en `plantilla/`
 
-```
-ypf_modelo_lenguaje/
-├── features/              # Features engineering
-│   ├── preprocesamiento.py
-│   ├── features_turno.py
-│   ├── rangos.py
-│   └── ...
-├── llm/                   # Modelo de lenguaje
-│   ├── config.py
-│   ├── model_gemma.py
-│   ├── prompts.py
-│   └── ...
-├── ypf_anomalies_detector/ # Detección de anomalías
-│   ├── pipeline/
-│   └── version_argentina/
-├── variaciones/           # Experimentación (copia)
-└── plantilla/             # Templates LaTeX
-```
+## Licencia
 
----
-
-## Ventajas de esta Arquitectura
-
-✅ **Modular**: Cada componente puede desarrollarse independientemente  
-✅ **Escalable**: Fácil agregar nuevos modelos o features  
-✅ **Mantenible**: Separación clara de responsabilidades  
-✅ **Testeable**: Cada módulo puede probarse por separado  
-✅ **Flexible**: Fácil cambiar modelos o configuraciones  
+Este proyecto es privado y propiedad de YPF.
